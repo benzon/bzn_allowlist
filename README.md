@@ -3,24 +3,25 @@
 **Version:** RC 1
 **Created by:** BenZoN
 
-### Requirements
+## Requirements
 
 [fivem-mysql-async v3.0.x](https://github.com/brouznouf/fivem-mysql-async) or [oxmysql](https://github.com/overextended/oxmysql)
 
-### Optional
+## Optional
 
 [esx-legacy](https://github.com/esx-framework/esx-legacy/tree/main/%5Besx%5D)
 [ConnectQueue](https://github.com/Nick78111/ConnectQueue)
 
-### Credits
+## Credits
 
 locale.lua - [esx-legacy](https://github.com/esx-framework/esx-legacy/tree/main/%5Besx%5D)
+My close friends, for supporting in me what ever I decide to do!
 
-### Note
+## Note
 
 The current version is a release candidate it should work with out major issues, but wont do a full release before im sure it's stable.
 
-### Description
+## Description
 
 Back in 2019 I released DRP_WHITELIST, and I knew I wanted to rewrite the allowlist script at some point, since I learned a lot the last two years.
 
@@ -34,13 +35,13 @@ Last time I based the commands on  essentialmode, but this time around I decided
 
 Tried to optimize the script even more than the original.
 
-### New Features
+## New Features
 
 Ace Permission support (command.allowlist)
 ConnectQueue integration
 Auto allowlist the first person to connect (can be disabled, and will be auto disabled if there is id's in the allowlist)
 
-### Features
+## Features
 
 - Supports Steam64 (steam:*****************)
 - Supports Steam Hex (steam:*****************)
@@ -52,14 +53,14 @@ Auto allowlist the first person to connect (can be disabled, and will be auto di
 - ESX RegisterCommand and permissions
 - ConnectQueue support control players priority, if priority is 0 (default) the script won’t add priority for the given id.
 
-### Commands
+## Commands
 
 - /+allowlist (ex. /+allowlist steam:76561197960287930) - with priority (ex. /+allowlist steam:76561197960287930 5) 
 - /-allowlist (ex. /-allowlist steam:1100001000056ba)
 - /priority (ex. /priority steam:1100001000056ba 5)
 - /reloadallowlist
 
-### Installation
+## Installation
 
 - Download - (link)
 - Copy bzn_allowlist to your `resource` folder

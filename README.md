@@ -2,7 +2,7 @@
 
 **Version:** RC 1
 
-**Created by:** BenZoN
+**Created by:** BenZoN (BZN Development)
 
 **Tebex store:** https://bzn.tebex.io/
 

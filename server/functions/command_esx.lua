@@ -42,13 +42,6 @@ if Config.ESX and not Config.Ace then
         
         LoadAllowlist()
         
-        if source == nil then
-            RconPrint('[bzn_allowlist] Reloaded')
-            return
-        end
-        
-        TriggerClientEvent('chat:addMessage', source, {
-			args = {"^1[bzn_allowlist]", "Reloaded"}
-		})
+        SendMessage(source, _U('reloaded'), 'success')
     end, true)
 end

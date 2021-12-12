@@ -1,4 +1,4 @@
-# bzn_allowlist - RC 1
+# BZN Allowlist - RC 1
 
 **Version:** RC 1
 **Created by:** BenZoN
@@ -69,9 +69,9 @@ Auto allowlist the first person to connect (can be disabled, and will be auto di
 
 ## Legal
 
-DRP_WHITELIST - DRP Whitelist
+bzn_allowlist - BZN Allowlist
 
-Copyright (C) 2015-2019 BenZoN
+Copyright (C) 2021 BenZoN
 
 This program Is free software: you can redistribute it And/Or modify it under the terms Of the GNU General Public License As published by the Free Software Foundation, either version 3 Of the License, Or (at your option) any later version.
 

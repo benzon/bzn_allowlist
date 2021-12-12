@@ -40,8 +40,8 @@ AddEventHandler('playerConnecting', function(name, setCallback, deferrals)
     deferrals.done()
 end)
 
-AlterAllowlist = function(args, source, type)
-    local type = type
+AlterAllowlist = function(args, source, callType)
+    local callType = callType
     local identifier = tostring(args[1]):lower()
     
     if args[1] then
@@ -66,28 +66,60 @@ AlterAllowlist = function(args, source, type)
                 SendMessage(source, 'Der er fejl i identifieren ' .. Config.Identifier .. 'ID skal have en længde på ' .. identifierLength .. ' uden ' .. Config.Identifier .. ': Indtastede længde var ' .. string.len(identifier), 'error')
                 return
             end
+
+            if Config.EnableConnectQueue and Config.Identifier == 'steam' and callType == 'add' or callType == 'update' then
+                priority = 0
+
+                if args[2] ~= nil then
+                    local prio = tonumber(args[2])
+
+                    if type(prio) == 'number' then
+                        priority = args[2]
+                    else
+                        SendMessage(source, 'Prioritet skal være numerisk', 'error')
+                        return
+                    end
+                end
+            end
             
-            if not Allowlist[identifier] and type == 'add' then
-                SaveToMySQL(identifier)
+            if not Allowlist[identifier] and callType == 'add' then
+                SaveToMySQL(identifier, priority)
                 
+                if priority ~= 0 then
+                    SendMessage(source, 'Du har tilføjet ' .. identifier .. ' til allowlisten med prioritet ' .. priority, 'success')
+                    return
+                end
+
                 SendMessage(source, 'Du har tilføjet ' .. identifier .. ' til allowlisten', 'success')
                 return
             end
 
-            if Allowlist[identifier] and type == 'remove' then
+            if Allowlist[identifier] and callType == 'remove' then
                 DeleteFromMySQL(identifier)
                 
                 SendMessage(source, 'Du har fjernet ' .. identifier .. ' fra allowlisten', 'success')
                 return
             end
+
+            if Allowlist[identifier] and callType == 'update' then
+                UpdateMySQL(identifier, priority)
+                
+                SendMessage(source, 'Du har ændret priotet for ' .. identifier .. ' til ' .. priority, 'success')
+                return
+            end
             
-            if type == 'add' then
+            if callType == 'add' then
                 SendMessage(source, 'Du prøvede at tilføjet ' .. identifier .. ' til allowlisten, personen er allerede allowlisted', 'warning')
                 return
             end
         
-            if type == 'remove' then
+            if callType == 'remove' then
                 SendMessage(source, 'Du prøvede at fjerne ' .. identifier .. ' fra allowlisten, personen er ikke allowlisted', 'warning')
+                return
+            end
+
+            if callType == 'update' then
+                SendMessage(source, 'Du prøvede at ændre prioritet for ' .. identifier .. ' men personen er ikke allowlisted', 'warning')
                 return
             end
         end
@@ -104,12 +136,29 @@ RemoveFromAllowlist = function()
     end
 
 LoadAllowlist = function()
+    local TempPriorityList = {}
+    local TempPriorityCount = 0
+
     MySQL.Async.fetchAll('SELECT * FROM bzn_allowlist', {}, function(result)
         for i = 1, #result, 1 do
             Allowlist[tostring(result[i].identifier):lower()] = tonumber(result[i].priority)
+
+            if Config.EnableConnectQueue and Config.Identifier == 'steam' and result[i].priority > 0 then
+                TempPriorityList[tostring(result[i].identifier):lower()] = result[i].priority
+                
+                TempPriorityCount = TempPriorityCount + 1
+            end
         end
         
-        print('^2[bzn_allowlist] Loaded ' .. #result .. ' players^7')
+        if Config.EnableConnectQueue and Config.Identifier == 'steam' and TempPriorityCount ~= 0 then
+            Queue.AddPriority(TempPriorityList)
+
+            table.wipe(TempPriorityList)
+
+            print('^2[bzn_allowlist] Loaded ' .. #result .. ' players and added ' .. TempPriorityCount .. ' to priority^7')
+        else
+            print('^2[bzn_allowlist] Loaded ' .. #result .. ' players^7')
+        end
         
         if Config.AutoAddFirstConnect and #result == 0 then
             print('^3[bzn_allowlist] Warning first person that connects will be auto allowlisted!^7')
@@ -117,11 +166,18 @@ LoadAllowlist = function()
     end)
 end
 
-SaveToMySQL = function(identifier)
+SaveToMySQL = function(identifier, priority)
     Allowlist[identifier] = 0
+
+    if priority == nil then
+        priority = 0
+    elseif priority ~= 0 and Config.EnableConnectQueue and Config.Identifier == 'steam' then
+        Queue.Exports:AddPriority(identifier, priority)
+    end
     
-    MySQL.Async.execute('INSERT INTO bzn_allowlist (identifier) VALUES (@identifier)', {
-        ['@identifier'] = identifier
+    MySQL.Async.execute('INSERT INTO bzn_allowlist (identifier, priority) VALUES (@identifier, @priority)', {
+        ['@identifier'] = identifier,
+        ['@priority'] = priority
     })
 end
 
@@ -131,6 +187,17 @@ DeleteFromMySQL = function(identifier)
     MySQL.Async.execute('DELETE FROM bzn_allowlist WHERE identifier = @identifier', {
         ['@identifier'] = identifier
     })
+end
+
+UpdateMySQL = function(identifier)
+    Allowlist[identifier] = priority
+
+    MySQL.Async.execute('UPDATE bzn_allowlist SET priority = @priority WHERE identifier = @identifier', {
+        ['@identifier'] = identifier,
+        ['@priority'] = priority
+    })
+
+    Queue.Exports:AddPriority(identifier, priority)
 end
 
 MySQL.ready(function()

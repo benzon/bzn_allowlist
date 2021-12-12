@@ -15,6 +15,16 @@ if Config.Ace and not Config.ESX then
         end
     end, true)
 
+    if Config.EnableConnectQueue and Config.Identifier == 'steam' then
+        RegisterCommand('priority', function(source, args, rawCommand)
+            local source = source
+            
+            if source == 0 or IsPlayerAceAllowed(source, 'command') then
+                AlterAllowlist(args, source, 'update')
+            end
+        end, true)
+    end
+
     RegisterCommand('reloadallowlist', function(source, args, rawCommand)
         local source = source
         

@@ -1,7 +1,12 @@
 # BZN Allowlist - RC 1
 
 **Version:** RC 1
+
 **Created by:** BenZoN
+
+**Tebex store:** https://bzn.tebex.io/
+
+**Discord:** https://discord.gg/yT7d9bnHJF
 
 ## Requirements
 

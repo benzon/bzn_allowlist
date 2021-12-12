@@ -10,11 +10,13 @@
 ## Optional
 
 [esx-legacy](https://github.com/esx-framework/esx-legacy/tree/main/%5Besx%5D)
+
 [ConnectQueue](https://github.com/Nick78111/ConnectQueue)
 
 ## Credits
 
 locale.lua - [esx-legacy](https://github.com/esx-framework/esx-legacy/tree/main/%5Besx%5D)
+
 My close friends, for supporting in me what ever I decide to do!
 
 ## Note
@@ -37,9 +39,9 @@ Tried to optimize the script even more than the original.
 
 ## New Features
 
-Ace Permission support (command.allowlist)
-ConnectQueue integration
-Auto allowlist the first person to connect (can be disabled, and will be auto disabled if there is id's in the allowlist)
+- Ace Permission support (command.allowlist)
+- ConnectQueue integration
+- Auto allowlist the first person to connect (can be disabled, and will be auto disabled if there is id's in the allowlist)
 
 ## Features
 

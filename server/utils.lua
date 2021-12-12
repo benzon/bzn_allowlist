@@ -37,6 +37,6 @@ SendMessage = function(source, message, type)
     end
 
     TriggerClientEvent('chat:addMessage', source, {
-        args = {MsgColor .. '[bzn_allowlist]' .. '^7', 'Reloaded'}
+        args = {MsgColor .. '[bzn_allowlist]' .. '^7', message}
     })
 end

@@ -15,16 +15,14 @@ AddEventHandler('playerConnecting', function(name, setCallback, deferrals)
     
     deferrals.defer()
     
-    deferrals.update('Tjekker allowliste og banliste')
+    deferrals.update(_U('allowlist_check'))
     
     Wait(500)
     
     local Identifiers = PlayerIdentifiers(source)
     
-    print(Identifiers[Config.Identifier])
-    
     if Config.AutoAddFirstConnect and next(Allowlist) == nil then
-        deferrals.update('Tilføjer dit id til allowlisten')
+        deferrals.update(_U('auto_allowlist'))
         
         SaveToMySQL(Identifiers[Config.Identifier])
         
@@ -32,7 +30,7 @@ AddEventHandler('playerConnecting', function(name, setCallback, deferrals)
     end
     
     if not Allowlist[Identifiers[Config.Identifier]] then
-        deferrals.done('Du er ikke allowlisted')
+        deferrals.done(_U('not_allowlisted'))
         CancelEvent()
         return
     end
@@ -60,10 +58,10 @@ AlterAllowlist = function(args, source, callType)
                 identifierLength = 40
             else
                 if Config.Identifier == 'steam' then
-                    identifierLength = '17 ved Steam64 og 15 ved Steam Hex'
+                    identifierLength = _U('identifier_steam')
                 end
                 
-                SendMessage(source, 'Der er fejl i identifieren ' .. Config.Identifier .. 'ID skal have en længde på ' .. identifierLength .. ' uden ' .. Config.Identifier .. ': Indtastede længde var ' .. string.len(identifier), 'error')
+                SendMessage(source, _U('identifier_length_error', Config.Identifier, identifierLength, Config.Identifier, string.len(identifier)), 'error')
                 return
             end
 
@@ -76,7 +74,7 @@ AlterAllowlist = function(args, source, callType)
                     if type(prio) == 'number' then
                         priority = args[2]
                     else
-                        SendMessage(source, 'Prioritet skal være numerisk', 'error')
+                        SendMessage(source, _U('priority_numeric'), 'error')
                         return
                     end
                 end
@@ -86,54 +84,51 @@ AlterAllowlist = function(args, source, callType)
                 SaveToMySQL(identifier, priority)
                 
                 if priority ~= 0 then
-                    SendMessage(source, 'Du har tilføjet ' .. identifier .. ' til allowlisten med prioritet ' .. priority, 'success')
+                    SendMessage(source, _U('allowlist_added_with_priority', identifier, priority), 'success')
                     return
                 end
 
-                SendMessage(source, 'Du har tilføjet ' .. identifier .. ' til allowlisten', 'success')
+                SendMessage(source, _U('allowlist_added', identifier), 'success')
                 return
             end
 
             if Allowlist[identifier] and callType == 'remove' then
                 DeleteFromMySQL(identifier)
                 
-                SendMessage(source, 'Du har fjernet ' .. identifier .. ' fra allowlisten', 'success')
+                SendMessage(source, _U('allowlist_removed', identifier), 'success')
                 return
             end
 
             if Allowlist[identifier] and callType == 'update' then
                 UpdateMySQL(identifier, priority)
                 
-                SendMessage(source, 'Du har ændret priotet for ' .. identifier .. ' til ' .. priority, 'success')
+                SendMessage(source, _U('priority_updated', identifier, priority), 'success')
                 return
             end
             
             if callType == 'add' then
-                SendMessage(source, 'Du prøvede at tilføjet ' .. identifier .. ' til allowlisten, personen er allerede allowlisted', 'warning')
+                SendMessage(source, _U('allowlist_found', identifier), 'warning')
                 return
             end
         
             if callType == 'remove' then
-                SendMessage(source, 'Du prøvede at fjerne ' .. identifier .. ' fra allowlisten, personen er ikke allowlisted', 'warning')
+                SendMessage(source, _U('allowlist_not_found', identifier), 'warning')
                 return
             end
 
             if callType == 'update' then
-                SendMessage(source, 'Du prøvede at ændre prioritet for ' .. identifier .. ' men personen er ikke allowlisted', 'warning')
+                SendMessage(source, _U('allowlist_not_found_priority', identifier), 'warning')
                 return
             end
         end
         
-        SendMessage(source, 'Der er fejl i identifieren der mangler steam: eller license:', 'error')
+        SendMessage(source, _U('identifier_error', Config.Identifier), 'error')
         return
     end
     
-    SendMessage(source, 'Du mangler at angive en identifier', 'error')
+    SendMessage(source, _U('identifier_missing', Config.Identifier), 'error')
     return
 end
-
-RemoveFromAllowlist = function()
-    end
 
 LoadAllowlist = function()
     local TempPriorityList = {}
@@ -155,13 +150,13 @@ LoadAllowlist = function()
 
             table.wipe(TempPriorityList)
 
-            print('^2[bzn_allowlist] Loaded ' .. #result .. ' players and added ' .. TempPriorityCount .. ' to priority^7')
+            print('^2[bzn_allowlist] ' .. _U('allowlist_loaded_with_priority', #result, TempPriorityCount) .. '^7')
         else
-            print('^2[bzn_allowlist] Loaded ' .. #result .. ' players^7')
+            print('^2[bzn_allowlist] ' .. _U('allowlist_loaded', #result) .. '^7')
         end
         
         if Config.AutoAddFirstConnect and #result == 0 then
-            print('^3[bzn_allowlist] Warning first person that connects will be auto allowlisted!^7')
+            print('^3[bzn_allowlist] ' ..  _U('auto_allowlist_warning') .. '^7')
         end
     end)
 end

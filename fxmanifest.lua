@@ -15,6 +15,8 @@ shared_scripts {
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
     '@connectqueue/connectqueue.lua',
+    'locale.lua',
+    'locales/*.lua',
     'config.lua',
     'server/utils.lua',
     'server/functions/*.lua',

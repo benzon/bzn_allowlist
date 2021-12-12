@@ -64,7 +64,7 @@ Auto allowlist the first person to connect (can be disabled, and will be auto di
 
 - Download - https://github.com/benzon/bzn_allowlist/archive/refs/tags/RC-1.zip
 - Copy bzn_allowlist to your `resource` folder
-- Add ensure `bzn_allowlist` in your `server.cfg` (if you are using ESX and/or ConnectQueue make sure to start the resource after these to)
+- Add `ensure bzn_allowlist` in your `server.cfg` (if you are using ESX and/or ConnectQueue make sure to start the resource after these to)
 - Import bzn_allowlist.sql to your database
 
 ## Legal
